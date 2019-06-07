@@ -8,17 +8,17 @@ class Travels extends Component {
         super()
         this.state = {
             places: [],
-            formNames: [{destiny: ''}, {price: ''}, {discount: ''}, {dateInit: ''}, {dateTurn: ''}, {imgpath: ''}],
-/*             destiny: '',             
-            price : '',
-            discount : '',
-            dateInit : '',
-            dateTurn : '',  
-            imgpath : '' */
+            formNames: {
+                destiny: '' ,
+                price: '',
+                discount: '',
+                dateInit: '',
+                dateTurn: '',
+                imgpath: ''
+            }
         }
     
-        this.addFilm = this.addFilm.bind(this);
-
+        this.formHandler = this.formHandler.bind(this);
 
         travelController.getTravels()        
         .then(res => {
@@ -26,89 +26,36 @@ class Travels extends Component {
             this.setState({ places });
           })
     }
-
-    addFilm(event){
-        
-    this.setState({
-        places: [
-            {...this.state.formNames}
-        ],
-        destiny: '',
-        price : '',
-        discount : '',
-        dateInit : '',
-        dateTurn : '',  
-        imgpath : ''
-    })
-
-        event.preventDefault();
-    }
     
     // FORM FUNCTIONS
 
-/*     keyDestiny (event) {
-        this.setState({
-            destiny: event.target.value
-        })        
-    }
-
-    keyImgpath (event) {
-          this.setState({
-            imgpath: event.target.value
-        })        
-    }
-
-    keyPrice (event) {
-        this.setState({
-            price: event.target.value
-        })        
-    }
-
-    keyDiscount (event) {
-        this.setState({
-            discount: event.target.value
-        })        
-    }
-
-    keyDateInit (event) {
-        this.setState({
-            dateInit: event.target.value
-        })        
-    }
-
-    keydateTurn (event) {
-        this.setState({
-            dateTurn: event.target.value
-        })        
-    } */
-
     inputChangeHandler(e) {
+
         let formNames = {...this.state.formNames};
         formNames[e.target.name] = e.target.value;
-        console.log('FORMNAMES', formNames)
-  /*    this.setState({
-        formNames
-        }); */
+        this.setState(
+            {formNames}
+        ); 
     }
 
-    formHandler(form) {
-        console.log(form, 'FORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRM')
-        axios.post('http://localhost:3000/api/travels', form)
+    formHandler(event) {
+        console.log(this.state.formNames);
+        axios.post('http://localhost:3000/api/travels', this.state.formNames)
             .then(function(response){
             console.log(response);
-            //Perform action based on response
         })
         .catch(function(error){
             console.log(error);
-            //Perform action based on error
         });
+
+        event.preventDefault();
     }
 
     render() {
         return(
             <div>
                 <h3>Introduce un Destino</h3>                
-{                 <form onSubmit={this.formHandler(this.state.formNames)}>
+{                 <form onSubmit={this.formHandler}>
                     <input name="destiny" placeholder="destiny" onChange={(e) => this.inputChangeHandler.call(this, e)} value={this.state.formNames.destiny}></input>
                     <input name="price" placeholder="price" onChange={(e) => this.inputChangeHandler.call(this, e)} value={this.state.formNames.price}></input>
                     <input name="discount" placeholder="discount" onChange={(e) => this.inputChangeHandler.call(this, e)} value={this.state.formNames.discount}></input>
@@ -118,7 +65,7 @@ class Travels extends Component {
                     <input type="submit" value="guardar"></input>
                 </form>}
 
-                {this.state.places.map(item =><Travel {...item}></Travel>)}
+                {this.state.places.map((item, i) =><Travel key={i} {...item}></Travel>)}
             </div>
         )
     }
