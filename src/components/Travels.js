@@ -20,7 +20,7 @@ class Travels extends Component {
     
         this.formHandler = this.formHandler.bind(this);
 
-        travelController.getTravels()        
+        travelController.getTravels()
         .then(res => {
             const places = res.data;
             this.setState({ places });
