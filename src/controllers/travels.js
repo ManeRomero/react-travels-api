@@ -6,8 +6,8 @@ let getTravels = () => {
    return axios.get(APIUrl)
 }
 
-let postTravel = () => {
-   return axios.post(APIUrl)
+let postTravel = (insert) => {
+   return axios.post(APIUrl, insert)
 }
 
 export default {

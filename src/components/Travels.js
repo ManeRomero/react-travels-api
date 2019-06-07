@@ -1,19 +1,20 @@
 import React, {Component} from 'react'
-import Travel from './Travel';
+import Travel from './Travel'
 import travelController from '../controllers/travels'
+import axios from 'axios'
 
 class Travels extends Component {
     constructor(props) {
         super()
         this.state = {
             places: [],
-             
-    imgpath : '',
-    price : '',
-    discount : '',
-    dateInit : '',
-    dateTurn : '' 
-    
+            formNames: [{destiny: ''}, {price: ''}, {discount: ''}, {dateInit: ''}, {dateTurn: ''}, {imgpath: ''}],
+/*             destiny: '',             
+            price : '',
+            discount : '',
+            dateInit : '',
+            dateTurn : '',  
+            imgpath : '' */
         }
     
         this.addFilm = this.addFilm.bind(this);
@@ -28,34 +29,24 @@ class Travels extends Component {
 
     addFilm(event){
         
-        this.setState({
-            places: [
-                {destiny: travelController.postTravel()}
-                /*                 
-                
-                {destiny: this.state.destiny},
-                {price: this.state.price},
-                {discount: this.state.discount},
-                {dateInit: this.state.dateInit},
-                {dateTurn: this.state.dateTurn},
-                {imgpath: this.state.imgpath}
-            ],
-
-            title: '',
-            imgpath: '',
-            price: '',
-            discount: '',
-            dateInit: '',
-            dateTurn: ''  */
-        ]
-        })
+    this.setState({
+        places: [
+            {...this.state.formNames}
+        ],
+        destiny: '',
+        price : '',
+        discount : '',
+        dateInit : '',
+        dateTurn : '',  
+        imgpath : ''
+    })
 
         event.preventDefault();
     }
     
     // FORM FUNCTIONS
 
-    keyDestiny (event) {
+/*     keyDestiny (event) {
         this.setState({
             destiny: event.target.value
         })        
@@ -89,23 +80,45 @@ class Travels extends Component {
         this.setState({
             dateTurn: event.target.value
         })        
+    } */
+
+    inputChangeHandler(e) {
+        let formNames = {...this.state.formNames};
+        formNames[e.target.name] = e.target.value;
+        console.log('FORMNAMES', formNames)
+  /*    this.setState({
+        formNames
+        }); */
+    }
+
+    formHandler(form) {
+        console.log(form, 'FORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRM')
+        axios.post('http://localhost:3000/api/travels', form)
+            .then(function(response){
+            console.log(response);
+            //Perform action based on response
+        })
+        .catch(function(error){
+            console.log(error);
+            //Perform action based on error
+        });
     }
 
     render() {
         return(
             <div>
-                {this.state.places.map(item =><Travel {...item}></Travel>)}
-                <h3>Introduce un Destino</h3>
-                
-{                 <form onSubmit={this.addFilm}>
-                    <input name="destiny" placeholder="destiny" value={this.state.destiny} onChange={(event) => this.keyDestiny(event)}></input>
-                    <input name="price" placeholder="price" value={this.state.price} onChange={(event) => this.keyPrice(event)}></input>
-                    <input name="discount" placeholder="discount" value={this.state.discount} onChange={(event) => this.keyDiscount(event)}></input>
-                    <input name="dateInit" placeholder="dateInit" value={this.state.dateInit} onChange={(event) => this.keyDateInit(event)}></input>
-                    <input name="dateTurn" placeholder="dateTurn" value={this.state.dateTurn} onChange={(event) => this.keydateTurn((event))}></input>
-                    <input name="imgpath" placeholder="imgpath" value={this.state.imgpath} onChange={(event) => this.keyImgpath(event)}></input>
+                <h3>Introduce un Destino</h3>                
+{                 <form onSubmit={this.formHandler(this.state.formNames)}>
+                    <input name="destiny" placeholder="destiny" onChange={(e) => this.inputChangeHandler.call(this, e)} value={this.state.formNames.destiny}></input>
+                    <input name="price" placeholder="price" onChange={(e) => this.inputChangeHandler.call(this, e)} value={this.state.formNames.price}></input>
+                    <input name="discount" placeholder="discount" onChange={(e) => this.inputChangeHandler.call(this, e)} value={this.state.formNames.discount}></input>
+                    <input name="dateInit" placeholder="dateInit" onChange={(e) => this.inputChangeHandler.call(this, e)} value={this.state.formNames.dateInit}></input>
+                    <input name="dateTurn" placeholder="dateTurn" onChange={(e) => this.inputChangeHandler.call(this, e)} value={this.state.formNames.dateTurn}></input>
+                    <input name="imgpath" placeholder="imgpath" onChange={(e) => this.inputChangeHandler.call(this, e)} value={this.state.formNames.imgpath}></input>
                     <input type="submit" value="guardar"></input>
                 </form>}
+
+                {this.state.places.map(item =><Travel {...item}></Travel>)}
             </div>
         )
     }
